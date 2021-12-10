@@ -1,51 +1,32 @@
-import mongoose from "mongoose";
-import _ from "lodash";
-import { Profile } from "../models/Profile";
-import { Simulator } from "../models/Simulator";
-import { Favorite } from "../models/Favorite";
-import { DBURL } from "../config";
+import { Profile, Simulator, Favorite } from "../models";
+import Logger from "../utils/logger";
 
-(async () => {
-
-  mongoose.connect(DBURL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-
-  const profile = new Profile({
-    name: `String`,
-    email: `String`,
-    capital: `123`,
-    divisa: `String`,
-    prefered_cryptocurrency: `String`,
-  });
-  await profile.save();
-
-  const query = { _id: "6093abb3dfd9da1deeae56f2" };
-  const idProfile = await Profile.findOne(query).then((e) => {
-    return e?._id;
-  });
-
-  const simulator = new Simulator({
-    profile_id: idProfile,
-    name: `String`,
-    start_date: `01/05/2021`,
-    check_date: `01/05/2021`,
-    cryptocurrency: `String`,
-    divisa: `String`,
-    Crypto_price_start: `123`,
-    Crypto_price_check: `123`,
-  });
-  await simulator.save();
-
-  const favorite = new Favorite({
-    profile_id: idProfile,
-    name: `String`,
-    favorite1: `String`,
-    favorite2: `String`,
-    favorite3: `String`,
-  });
-  await favorite.save();
-
-  mongoose.disconnect();
-})();
+const seed = async () => {
+    const profileId = '6093abb3dfd9da1deeae56f2'; // i suppose we use this id in other environments too so it has to be hard coded, if not this is irrelevant and we can use the _id returned from creating the first Profile
+    await Promise.all([ // just for concurrency
+        Profile.create({
+            _id: profileId,
+            name: 'name',
+            nickname: 'nickname',
+            email: 'email',
+            divisa: 'divisa',
+            capital: 123,
+            preferredCryptocurrency: 'preferredCryptocurrency',
+        }),
+        Simulator.create({
+            profile: profileId,
+            dateRecorded: new Date(),
+            cryptocurrency: 'BNB',
+            euros: 6000,
+            price: 600,
+            quantity: 10,
+        }),
+        Favorite.create({
+            profile: profileId,
+            name: 'favorite',
+            favorites: ['favorite1', 'favorite2', 'favorite3']
+        })
+    ]);
+}
+seed().then(() => Logger.info(Logger.labels.SEED, 'Seed successful'))
+    .catch(e => Logger.info(Logger.labels.SEED, 'Seed failed', e))
