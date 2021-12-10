@@ -1,19 +1,19 @@
 # Enhancements
 - Added winston logger to store the logs, and we can add `winston-elasticsearch-apm` as a `transport` to store the errors in `APM` and have errors in a dashboard
-- Production ready coed should have no `console.log()` as it's a bad practice as it has negative performance effect, and we should use `monitoring solutions` such as `APM` for metrics and errors, and store debugging logs in `filebeat` and use `Kibana` for indexing and performing search on them     
-- It's a good practice to have a 'index.ts' file to shorten the imports
+- Production ready code should have no `console.log()` as it's a bad practice as it has negative performance effect, and we should use `monitoring solutions` such as `APM` for metrics and errors, and store debugging logs in `filebeat` and use `Kibana` for indexing and performing search on them     
+- It's a good practice to have a `index.ts` file to shorten the imports
 - Added eslint and prettier to lint the code and all developers have the same code style
 - Added eslint scripts in package.json
 - `Favorite` and `Simulator` model needed to have reference to `Profile`, by storing `id` as string we won't be using the mongodb feature to populate function and much more  
-- `Favorite` should store the  favorite1, favorite2, favorite3 in an array name `favorites` as they are just 3 strings with same type   
+- `Favorite` should store the  favorite1, favorite2, favorite3 in an array name `favorites` as they are just 3 strings with same type, although i think we could have more sophisticated db model structure :)
 - Models needed some validations and restrictions in Schema
 - Using export default in models for easier imports
 - Added interfaces for models to use the full power of typescript and avoid further problems with it
 - Spelling error `prefered_cryptocurrency`=> `preferred_cryptocurrency`
-- I guess the field `euros` in `Simulator` model is redundant
-- Seed was trying to create a Simulator with fields `start_date, check_date, Crypto_price_check, Crypto_price_start` that didn't exist in model!
+- I guess the field `euros` in `Simulator` model is redundant(, or it's the result of multiplying quantity and price?)
+- Seed was trying to create a Simulator with fields `start_date, check_date, Crypto_price_check, Crypto_price_start` that didn't exist in model so removed them!
 - Added `connection` directory for db connection, added mongodb connection file to use one `1 connection` for the app as it's the best practice to use existing connection (Using singleton for mongoose in models)
-- It's better to create the db url in the app than to get it all from the env
+- It's better to create the db url in the app than to get it all from the env (more flexible)
 - Variable names and field names didn't follow the same `naming convention` for example we had both `checkEnv` and `preferred_cryptocurrency` so choose the `camelCase` naming convention and applied it to entire project
 - `checkEnv` function if statements needed to be updated as the value read from env should be compared with `undefined` as they may have the value of 0 or false 
 - Added enums and constants for modifiability and consistency 
@@ -21,7 +21,7 @@
 - This app without authentication is Not production ready but as you asked I've ignored authorization
 - App should have rate limit for routes, the foundation of for that could be having authentication, so I've ignored this one too 
 - We should avoid `var` to declare variables and based on the whether we intend to change it or not use `let` or `const`
-- Added the `success` field to responses so client to check that field first then use the `data` and if there is a problem could send `success = false` and `message` field would contain details about the error
+- Added the `success` field to responses so client to check that field first then use the `data` and if there is a problem could send `success = false` and `message` field would contain details about the error that client can show to user
 - Added different status codes for different scenarios such as `NOT_FOUND` or `CREATED`, ...
 ## Routes
 - Added `/v1` to route, so we could migrate to v2 without breaking backward compatibility with v1, and v1 users could still work with the app without any force update
@@ -43,5 +43,5 @@
 ### Simulator routes
 - Changed the `/simulator` to `/simulators` as it's the best practice for REST API to use plural nouns 
 - No need to create a new express server, we should use the existing one 
-- Moves `/simulator` route to profile routes, the  route `/profiles/:id/simulators` will return simulators related to profile with `id` specified as param
+- Moved `/simulator` route to profile routes, the  route `/profiles/:id/simulators` will return simulators related to profile with `id` specified as param
 - Route POST `/simulator/:profile_id` route  doesn't need the param as it can be in body, changed the route to POST `/simulators`
