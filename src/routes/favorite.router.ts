@@ -1,20 +1,15 @@
-import express from "express";
-import { Favorite } from "../models/Favorite";
+import { Router } from "express";
+import { FavoriteController } from '../controllers';
+import Validators from '../validators';
 
-export const router = express.Router();
+const router = Router();
 
-router.get("/api/favorite", async (req, res) => {
-  const favorite = await Favorite.find().lean();
-  console.log(favorite);
-  res.json({ favorite });
-});
+router.get("/",
+    Validators.getFavorites,
+    FavoriteController.getFavorites);
 
-router.get("/api/favorite/:profile_id", async (req, res) => {
-  console.log(req.params);
-  let query = {};
-  const { profile_id } = req.params;
-  query = { profile_id };
-  console.log(query);
-  const data = await Favorite.find(query);
-  res.json(data);
-});
+router.get("/:id",
+    Validators.getFavorite,
+    FavoriteController.getFavorite)
+
+export default router;
