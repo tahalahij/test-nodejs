@@ -17,6 +17,7 @@ const schema = new Schema(
             type: mongoose.Types.ObjectId,
             ref: 'Profile',
             required: true,
+            index: true // as we are going to query based on this field a lot
         },
         dateRecorded: {
             type: Date,
